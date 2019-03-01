@@ -19,7 +19,7 @@
   import AuthenticationService from '@/services/AuthenticationService.js'
   export default {
     name: 'Register',
-    data() {debugger
+    data() {
        var Validatename = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('Please input the name'));
@@ -55,11 +55,6 @@
       };
       return {
         labelPosition: 'right',
-        formLabelAlign: {
-          name: '',
-          email: '',
-          password: ''
-        },
         ruleForm: {
           name: '',
           email: '',

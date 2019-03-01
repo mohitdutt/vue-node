@@ -1,9 +1,11 @@
 const newUser = require('../../models/user');
+const jwt = require('jsonwebtoken')
+const config = require('../../conf')
 
 module.exports = {
     async register (req, res) {
       try{
-        email = req.body.email
+        const { email } = req.body;
         newUser.findOne({email}).then(async (response)=>{
           if(response){
             res.send({
@@ -14,15 +16,47 @@ module.exports = {
             res.send( user.toJSON())
             console.log('user created', user.toJSON())
           }
-          
         })
       }catch(err){
         res.status(400).send({
           error: `error in creating user..`
         })
       }
-    }
+    },
     
+     login (req, res){
+      try{
+        const { email ,password } = req.body;
+        newUser.findOne({email}).then( response=>{
+          if(response){
+            if(response.password === password){
+              let jwToken = jwt.sign({ email }, config.jwtSalt);
+              console.log(jwToken)
+              response.accessToken = jwToken;
+              res.status(200).send({
+                msg: `logged in successfully`,
+                accessToken: jwToken
+              })
+              console.log(req)
+            }else if(response.password !== password){
+              res.status(400).send({
+                msg: `password does not match`
+              })
+            }
+          }else{
+            res.status(400).json({
+              msg: "No user found in this email",
+            }) 
+          }
+          // console.log('response',response.password)
+         
+        })
+      }catch(err){
+        res.status(400).send({
+          error: `error in login..`
+        })
+      }
+    }
 
     //  register(req, res){
     //       const {name, email ,password } = req.body;

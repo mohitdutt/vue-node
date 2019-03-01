@@ -12,7 +12,4 @@ let UserSchema1 = new Schema({
     password: { type: String, required: true }
 });
 
-
-// Export the model
-// module.exports = mongoose.model("User", UserSchema,'gd');
-module.exports = mongoose.model("newUser", UserSchema1,'newuser');
+module.exports = mongoose.model("newUser", UserSchema1,'newuser2');

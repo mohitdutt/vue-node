@@ -17,4 +17,4 @@ app.use(cors())
 const conf = require('../conf');
 const db_con = require('./config')
 require('./route')(app)
-app.listen(process.env.PORT|| conf.Port)
+app.listen(process.env.PORT|| conf.db.Port)

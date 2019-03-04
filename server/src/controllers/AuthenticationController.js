@@ -1,6 +1,18 @@
 const newUser = require('../../models/user');
 const jwt = require('jsonwebtoken')
-const config = require('../../conf')
+const conf = require('../../conf')
+const async = require('async');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: '465',
+  auth: {
+         user: 'mohitduttqexon@gmail.com',
+         pass: 'mohitdutt11111.',
+
+     }
+ });
 
 module.exports = {
     async register (req, res) {
@@ -14,7 +26,6 @@ module.exports = {
           }else{
             const user = await newUser.create(req.body)
             res.send( user.toJSON())
-            console.log('user created', user.toJSON())
           }
         })
       }catch(err){
@@ -28,16 +39,15 @@ module.exports = {
       try{
         const { email ,password } = req.body;
         newUser.findOne({email}).then( response=>{
+          // console.log(response)
           if(response){
             if(response.password === password){
-              let jwToken = jwt.sign({ email }, config.jwtSalt);
-              console.log(jwToken)
+              let jwToken = jwt.sign({ email }, conf.db.jwtSalt);
               response.accessToken = jwToken;
               res.status(200).send({
                 msg: `logged in successfully`,
                 accessToken: jwToken
               })
-              console.log(req)
             }else if(response.password !== password){
               res.status(400).send({
                 msg: `password does not match`
@@ -48,7 +58,6 @@ module.exports = {
               msg: "No user found in this email",
             }) 
           }
-          // console.log('response',response.password)
          
         })
       }catch(err){
@@ -56,35 +65,79 @@ module.exports = {
           error: `error in login..`
         })
       }
-    }
+    },
 
-    //  register(req, res){
-    //       const {name, email ,password } = req.body;
-    //       let user = new newUser({
-    //           name: name,
-    //           email:email,
-    //           password:password
-    //       })
-    //       newUser.findOne({email}).then(response1=> {
-    //         if(response1){
-    //           res.status(409).json({
-    //             msg: "already a user"
-    //           })
-    //         }else{
-    //           user.save().then(response1=>{
-    //             res.status(200).json({
-    //               msg: "new user created"
-    //             })
-    //           console.log(response1)
-    //           })
-    //           .catch(err=>{
-    //             res.status(40).json({
-    //               msg: "error in creating user",
-    //               error: err
-    //             })
-    //             console.log('error is',err);
-    //           })
-    //         }
-    //       })
-    // }
+
+    resetPassword(req, res){
+      async.waterfall([
+        function(done) {
+          newUser.findOne({
+            email: req.body.email
+          }).exec(function(err, user) {
+            if (user) {
+              done(err, user);
+            } else {
+              done('newUser not found.');
+            }
+          });
+        },
+        function(user, done) {
+          // create the random token
+          crypto.randomBytes(20, function(err, buffer) {
+            var token = buffer.toString('hex');
+            done(err, user, token);
+          });
+        },
+        function(user, token, done) {
+          newUser.findByIdAndUpdate({ _id: user._id }, { reset_password_token: token, reset_password_expires: Date.now() + 86400000 }, { upsert: true, new: true }).exec(function(err, new_user) {
+            done(err, token, new_user);
+          });
+        },
+        function(token, user, done) {
+          var data = {
+            to: user.email,
+            from: `mohitduttqexon@gmail.com`,
+            subject: 'Password help has arrived!',
+            html: `<div>`+`hello data ${'http://localhost:8080/setPassword?token='}`+token+`</div>`
+          };
+    
+          transporter.sendMail(data, function (err, info) {
+            if(err)
+              console.log('err')
+            else
+              console.log('info',data.html);
+              res.status(200).send({
+                data: data.html
+              })
+
+         });
+        }
+      ],
+       function(err) {
+        return res.status(422).json({ message: err });
+      });
+    },
+
+    setPassword(req, res){
+      try{
+        const { token, password } = req.body;
+        newUser.findOne({reset_password_token:token}).then( response=>{
+          
+          if(response){
+            // console.log('response',response)
+            // newUser.findByIdAndUpdate({ reset_password_token: token }, { reset_password_token: '',password: password  }, { upsert: true, new: true }).exec(function(err, new_user) {
+            //   // done(err, token, new_user);
+            //   console.log(password)
+            //   console.log(newUser.password)
+            // });
+
+            newUser.save({reset_password_token:token,})
+              console.log(newUser)
+          }
+        })
+
+      }catch(err){
+
+      }
+    }
 }

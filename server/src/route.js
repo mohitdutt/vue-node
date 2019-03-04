@@ -6,6 +6,11 @@ module.exports = (app)=> {
    AuthenticationController.register)
 
    app.post('/login',
-   AuthenticationController.login
-   )
+   AuthenticationController.login)
+
+   app.post('/resetPassword',
+   AuthenticationController.resetPassword)
+
+   app.post('/setPassword',
+   AuthenticationController.setPassword)
 }

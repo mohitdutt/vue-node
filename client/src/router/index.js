@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
+import setPassword from '@/components/setPassword'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/setPassword',
+      name: 'setPassword',
+      component: setPassword
     }
   ]
 })

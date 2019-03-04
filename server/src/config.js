@@ -3,7 +3,7 @@ const monk = require('monk');
 const conf = require('../conf');
 const mongoose = require('mongoose');
 
-const db_con = mongoose.connect(conf.DB_String)
+const db_con = mongoose.connect(conf.db.DB_String)
 .then(resp=>{
     console.log('connected')
 })

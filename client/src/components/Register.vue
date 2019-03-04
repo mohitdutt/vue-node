@@ -12,6 +12,7 @@
       </el-form-item>
     </el-form>
     <el-button type="primary" plain @click="register('ruleForm')">Register</el-button>
+     <router-link to= "/login"><el-button type="success" plain class= "login">Login</el-button></router-link>
   </div>
 </template>
 
@@ -96,3 +97,6 @@
   }
 </script>
 
+<style scoped>
+
+</style>

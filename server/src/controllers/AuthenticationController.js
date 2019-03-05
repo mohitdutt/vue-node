@@ -39,14 +39,24 @@ module.exports = {
       try{
         const { email ,password } = req.body;
         newUser.findOne({email}).then( response=>{
-          // console.log(response)
           if(response){
             if(response.password === password){
               let jwToken = jwt.sign({ email }, conf.db.jwtSalt);
               response.accessToken = jwToken;
+              response.save().then(resp=>{
+              })
+              // newUser.update({email},
+              //   { $set:
+              //       {
+              //         accessToken: jwToken
+              //       }
+              //   }
+              // )
               res.status(200).send({
                 msg: `logged in successfully`,
-                accessToken: jwToken
+                accessToken: jwToken,
+                name: response.name,
+                email: response.email
               })
             }else if(response.password !== password){
               res.status(400).send({
@@ -66,7 +76,6 @@ module.exports = {
         })
       }
     },
-
 
     resetPassword(req, res){
       async.waterfall([
@@ -118,24 +127,41 @@ module.exports = {
       });
     },
 
-    setPassword(req, res){
+      setPassword(req, res){
       try{
         const { token, password } = req.body;
         newUser.findOne({reset_password_token:token}).then( response=>{
-          
           if(response){
-            // console.log('response',response)
-            // newUser.findByIdAndUpdate({ reset_password_token: token }, { reset_password_token: '',password: password  }, { upsert: true, new: true }).exec(function(err, new_user) {
-            //   // done(err, token, new_user);
-            //   console.log(password)
-            //   console.log(newUser.password)
-            // });
+            response.reset_password_token = '',
+            resposne.password = password
+            response.save().then(resp=>{
+              console.log('resp', resp)
+            })
+            res.status(200).send({
+                msg: `password set successfully!`
+              }) 
+          }
 
-            newUser.save({reset_password_token:token,})
-              console.log(newUser)
+        });
+      }catch(err){
+
+      }
+    },
+
+    logout(req, res){
+      try{
+        const { accessToken } = req.body;
+        newUser.findOne({accessToken}).then (response=>{
+          if(response){
+            response.accessToken = null
+            response.save().then(resp=>{
+              console.log('resp', resp)
+            })
+            res.status(200).send({
+              msg: `logout`
+            })
           }
         })
-
       }catch(err){
 
       }

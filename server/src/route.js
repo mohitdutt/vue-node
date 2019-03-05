@@ -13,4 +13,7 @@ module.exports = (app)=> {
 
    app.post('/setPassword',
    AuthenticationController.setPassword)
+
+   app.post('/logout',
+   AuthenticationController.logout)
 }

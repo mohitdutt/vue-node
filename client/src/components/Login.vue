@@ -3,10 +3,10 @@
     <h3 v-show="forgotpwd">Enter Your Email</h3>
     <el-form :model= "ruleForm" :rules= "rules" :label-position="labelPosition" label-width="100px" ref= "ruleForm">
       <el-form-item label="Email" prop= "email">
-        <el-input v-model="ruleForm.email" autocomplete="off"></el-input>
+        <el-input v-model="ruleForm.email" ></el-input>
       </el-form-item>
       <el-form-item label="Password" prop= "password" v-show="forgotpwdflip">
-        <el-input v-model="ruleForm.password" autocomplete="off"></el-input>
+        <el-input v-model="ruleForm.password" ></el-input>
       </el-form-item>
     </el-form>
     <el-button type="primary" plain @click="login('ruleForm')" v-show="forgotpwdflip">Login</el-button>
@@ -61,7 +61,6 @@
       }
     },
     watch: {
-      // email(value) {}
     },
     methods: {
        login(formName) {debugger
@@ -72,6 +71,8 @@
               password: this.ruleForm.password
             })
             console.log(response)
+            localStorage.setItem('accessToken', response.data.accessToken)
+            this.$router.push('dashboard') 
             return false;
           }else{
             console.log('error submit!!');
@@ -91,6 +92,7 @@
               email: this.ruleForm.email
             })
              console.log(response)
+             localStorage.setItem('user', response)
             return false;
           }else{
             console.log('not valid')

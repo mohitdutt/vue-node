@@ -14,8 +14,11 @@
     </el-submenu>
   </el-submenu> -->
   <el-menu-item index="3" disabled>Info</el-menu-item>
-  <el-menu-item index="4"><router-link to="/register">Sign In</router-link></el-menu-item>
-  <el-menu-item index="5"><router-link to="/login">Log In</router-link></el-menu-item>
+  <el-menu-item index="4" v-show="login"><router-link to="/register">Sign Up</router-link></el-menu-item>
+  <el-menu-item index="5" v-show="login"><router-link to="/login" >Log In</router-link></el-menu-item>
+  <el-menu-item index="7" v-show="logOut"><router-link to="/dashboard" >Dashboard</router-link></el-menu-item>
+  <el-menu-item index="6" v-show="logOut" @click= "logout"><router-link to="/login" >Log Out</router-link></el-menu-item>
+  
 </el-menu>
 <!-- <div class="line"></div>
 <el-menu
@@ -45,17 +48,39 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService.js'
   export default {
     name: 'navbar',
     data() {
       return {
         activeIndex: '1',
-        activeIndex2: '1'
+        login: true,
+        logOut: false,
       };
+    },
+    created() {
+      debugger
+      if(localStorage.accessToken != ''){
+        this.login = false
+        this.logOut = true
+        this.activeIndex = '7'
+      }else{
+        this.login = false
+        this.logOut = true
+      }
     },
     methods: {
       handleSelect(key, keyPath) {debugger
         console.log(key, keyPath);
+      },
+      async logout(){
+        localStorage.accessToken = ''
+        this.login = true
+        this.logOut = false
+        const response = await AuthenticationService.logout({
+          accessToken: localStorage.accessToken
+        })
+         this.$router.push('/') 
       }
     }
   }

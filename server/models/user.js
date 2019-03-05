@@ -10,7 +10,8 @@ let UserSchema1 = new Schema({
     name: {type: String, required:true, max:100},
     email: { type: String, required: true, max: 100 },
     password: { type: String, required: true },
-    reset_password_token: {type: String}
+    accessToken: {type: String, default: null},
+    reset_password_token: {type: String, default: null}
 });
 
 module.exports = mongoose.model("newUser", UserSchema1,'newuser2');

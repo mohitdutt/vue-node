@@ -12,5 +12,8 @@ export default {
   },
   setPassword(credentials){
     return Api().post('setPassword', credentials)
+  },
+  logout(credentials){
+    return Api().post('logout', credentials)
   }
 }

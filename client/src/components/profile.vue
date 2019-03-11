@@ -1,6 +1,7 @@
 <template>
   <div class="col-md-4 mt-5" style="margin: 0 auto">
     <h3>Edit Profile</h3>
+    <img width="15%" src="http://localhost:8080/static/img/"+this.profileImage>
     <el-form :model= "ruleForm" :rules= "rules" :label-position="labelPosition" label-width="100px" ref= "ruleForm">
 
       <el-form-item label="User Name" prop= "name">
@@ -33,6 +34,7 @@
 
         <input type="file" name="file" @change="onFileChanged">
         <button @click="onUpload">Upload!</button>
+
       </el-form-item>
       <el-button type="primary" plain @click="UpdateProfile('ruleForm')">Update</el-button>
     </el-form>
@@ -60,7 +62,7 @@
       };
       return {
         selectedFile: '',
-        file: '',abc: '',
+        file: '',abc: '', profileImage: '',
         // fileList: [],
         labelPosition: 'right',
         ruleForm: {
@@ -97,6 +99,7 @@
       this.ruleForm.phone = userInfo.phone
       this.ruleForm.bio = userInfo.bio
       this.ruleForm.location = userInfo.location
+      this.profileImage = userInfo.image
     },
     methods: {
       // errorfileUpload(err, file, fileList){debugger},

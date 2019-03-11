@@ -78,7 +78,7 @@
       email(value) {}
     },
     methods: {
-       register(formName) {
+       register(formName) {debugger
         this.$refs[formName].validate(async(valid)=>{
           if(valid){debugger
             const response = await  AuthenticationService.register({

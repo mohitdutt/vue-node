@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 module.exports = {
     async register (req, res) {
       try{
+        console.log(req.body)
         const { email } = req.body;
         newUser.findOne({email}).then(async (response)=>{
           if(response){
@@ -57,7 +58,11 @@ module.exports = {
                 msg: `logged in successfully`,
                 accessToken: jwToken,
                 name: response.name,
-                email: response.email
+                email: response.email,
+                image: response.image,
+                phone: response.phone,
+                bio: response.bio,
+                location: response.location
               })
             }else if(response.password !== password){
               res.status(400).send({
@@ -194,10 +199,12 @@ module.exports = {
     
     UploadPhoto(req, res, next){
       try{
+        console.log(req.file)
         const { accessToken } = req.body;
         newUser.findOne({accessToken}).then(response=>{
           if(response){
-            response.image = req.file.path
+            
+            response.image = req.file.filename
             response.save().then(resp=>{
             })
             res.status(200).send({
@@ -208,6 +215,14 @@ module.exports = {
         })
       }catch(err){
         console.log('error')
+      }
+    },
+
+    retrievePhoto(req, res, next){
+      try{
+
+      }catch(err){
+
       }
     }
 }

@@ -22,7 +22,7 @@ const upload = multer({storage: storage,
 })
 module.exports = (app)=> {
    app.post('/register', 
-   AuthenticationControllerPolicy.register, 
+   // AuthenticationControllerPolicy.register, 
    AuthenticationController.register)
 
    app.post('/login',
@@ -42,5 +42,9 @@ module.exports = (app)=> {
 
    app.post('/UploadPhoto', upload.single('file'),
    AuthenticationController.UploadPhoto
+   )
+
+   app.get('/retrievePhoto', upload.single('file'),
+   AuthenticationController.retrievePhoto
    )
 }

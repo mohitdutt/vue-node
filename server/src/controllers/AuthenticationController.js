@@ -4,6 +4,7 @@ const conf = require('../../conf')
 const async = require('async');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: '465',
@@ -164,6 +165,49 @@ module.exports = {
         })
       }catch(err){
 
+      }
+    },
+
+    UpdateProfile(req, res){
+      try{  
+        const {name, email, phone, bio, location, image, accessToken} = req.body
+        console.log(req)
+        newUser.findOne({accessToken}).then (response=> {
+          if(response){ 
+            response.name = name, response.email = email, response.phone = phone,
+            response.bio = bio, response.location = location, response.image = image
+
+            response.save().then(resp=>{
+              // console.log('resp', resp)
+            })
+            res.status(200).send({
+              msg: `update profile successfully`,
+              userDetails: response
+            })
+
+          }
+        })
+      }catch(err){
+
+      }
+    },
+    
+    UploadPhoto(req, res, next){
+      try{
+        const { accessToken } = req.body;
+        newUser.findOne({accessToken}).then(response=>{
+          if(response){
+            response.image = req.file.path
+            response.save().then(resp=>{
+            })
+            res.status(200).send({
+              msg: `update profile successfully`,
+              userDetails: response
+            })
+          }
+        })
+      }catch(err){
+        console.log('error')
       }
     }
 }

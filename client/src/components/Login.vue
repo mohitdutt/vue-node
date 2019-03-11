@@ -72,7 +72,8 @@
             })
             console.log(response)
             localStorage.setItem('accessToken', response.data.accessToken)
-            this.$router.push('dashboard') 
+            localStorage.setItem('userDetails', JSON.stringify(response.data))
+            this.$router.push('dashboard')
             return false;
           }else{
             console.log('error submit!!');
@@ -92,7 +93,6 @@
               email: this.ruleForm.email
             })
              console.log(response)
-             localStorage.setItem('user', response)
             return false;
           }else{
             console.log('not valid')

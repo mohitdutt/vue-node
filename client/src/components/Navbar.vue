@@ -18,7 +18,7 @@
   <el-menu-item index="5" v-show="login"><router-link to="/login" >Log In</router-link></el-menu-item>
   <el-menu-item index="7" v-show="logOut"><router-link to="/dashboard" >Dashboard</router-link></el-menu-item>
   <el-menu-item index="6" v-show="logOut" @click= "logout"><router-link to="/login" >Log Out</router-link></el-menu-item>
-  
+
 </el-menu>
 <!-- <div class="line"></div>
 <el-menu
@@ -60,13 +60,13 @@ import AuthenticationService from '@/services/AuthenticationService.js'
     },
     created() {
       debugger
-      if(localStorage.accessToken != ''){
+      if(localStorage.accessToken !== ''){
         this.login = false
         this.logOut = true
         this.activeIndex = '7'
       }else{
-        this.login = false
-        this.logOut = true
+        this.login = true
+        this.logOut = false
       }
     },
     methods: {
@@ -74,13 +74,11 @@ import AuthenticationService from '@/services/AuthenticationService.js'
         console.log(key, keyPath);
       },
       async logout(){
-        localStorage.accessToken = ''
-        this.login = true
+         this.login = true
         this.logOut = false
-        const response = await AuthenticationService.logout({
-          accessToken: localStorage.accessToken
-        })
-         this.$router.push('/') 
+        this.activeIndex = '5'
+        localStorage.accessToken = ''
+         this.$router.push('/login')
       }
     }
   }

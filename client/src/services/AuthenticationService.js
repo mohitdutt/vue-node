@@ -15,5 +15,14 @@ export default {
   },
   logout(credentials){
     return Api().post('logout', credentials)
+  },
+  UpdateProfile(credentials){
+    return Api().post('UpdateProfile', credentials)
+  },
+  UploadPhoto(credentials){debugger
+    return Api().post('UploadPhoto', credentials,
+    {
+      headers: {'Content-Type': 'multipart/form-data'}
+    })
   }
 }

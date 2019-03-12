@@ -1,7 +1,7 @@
 <template>
   <div class="col-md-4 mt-5" style="margin: 0 auto">
     <h3>Edit Profile</h3>
-    <img width="15%" src="http://localhost:8080/static/img/"+this.profileImage>
+    <img width="15%" src="http://localhost:8080/static/img/">
     <el-form :model= "ruleForm" :rules= "rules" :label-position="labelPosition" label-width="100px" ref= "ruleForm">
 
       <el-form-item label="User Name" prop= "name">
@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="image upload" prop= "image">
-        <!-- <el-upload class="upload-demo" drag action= "http://localhost:3000/UploadPhoto"
+        <!-- <el-upload class="upload-demo" drag action= "http://localhost:3001/UploadPhoto"
             :on-change= "fileupload"  :on-success= "successfileUpload" :on-error= "errorfileUpload" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" v-model="ruleForm.image">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
@@ -61,7 +61,7 @@
         }
       };
       return {
-        selectedFile: '',
+        selectedFile: '',Authorization: '',
         file: '',abc: '', profileImage: '',
         // fileList: [],
         labelPosition: 'right',
@@ -91,17 +91,32 @@
       }
     },
     created() {debugger
-      var userInfo = JSON.parse(localStorage.userDetails)
-      console.log(userInfo)
+      // var userInfo = JSON.parse(localStorage.userDetails)
+      // console.log(userInfo)
 
-      this.ruleForm.name = userInfo.name
-      this.ruleForm.email = userInfo.email
-      this.ruleForm.phone = userInfo.phone
-      this.ruleForm.bio = userInfo.bio
-      this.ruleForm.location = userInfo.location
-      this.profileImage = userInfo.image
+      // this.ruleForm.name = userInfo.name
+      // this.ruleForm.email = userInfo.email
+      // this.ruleForm.phone = userInfo.phone
+      // this.ruleForm.bio = userInfo.bio
+      // this.ruleForm.location = userInfo.location
+      // this.profileImage = userInfo.image
+
+
+            AuthenticationService.posts({
+
+            })
+            console.log(response)
+
+
     },
     methods: {
+    //  async onpageload(){debugger
+    //      const response = await  AuthenticationService.posts({
+    //           accessToken: localStorage.accessToken
+    //         })
+    //         console.log(response)
+    //   },
+
       // errorfileUpload(err, file, fileList){debugger},
       // successfileUpload(response, file, fileList){
       //   console.log(file)
@@ -142,7 +157,7 @@
       // const response =  await AuthenticationService.UploadPhoto({
       //     formData
       //   })
-      return axios.post("http://localhost:3000/UploadPhoto",
+      return axios.post("http://localhost:3001/UploadPhoto",
        formData,
        configheader)
         console.log(response)

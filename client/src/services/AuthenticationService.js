@@ -1,6 +1,23 @@
 import Api from '@/services/Api'
 
 export default {
+ postData(args){debugger
+
+    return Api().post('emailVerification', args.data,)
+  },
+
+  emailVerification(credentials){debugger
+    return Api().post('emailVerification', credentials)
+  },
+
+  posts(credentials){debugger
+    return Api().post('posts', credentials,
+    {
+      headers: {
+        authorization:'Token '+localStorage.accessToken
+      }
+    }
+    )},
   register(credentials){
     return Api().post('register', credentials)
   },

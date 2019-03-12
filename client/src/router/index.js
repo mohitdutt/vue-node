@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import setPassword from '@/components/setPassword'
 import dashboard from '@/components/dashboard'
 import profile from '@/components/profile'
+import emailVerification from '@/components/emailVerification'
 
 Vue.use(Router)
 
@@ -25,6 +26,11 @@ export default new Router({
       path: '/setPassword',
       name: 'setPassword',
       component: setPassword
+    },
+    {
+      path: '/emailVerification',
+      name: 'emailVerification',
+      component: emailVerification
     },
     {
       path: '/dashboard',

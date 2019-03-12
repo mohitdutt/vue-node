@@ -10,15 +10,14 @@ const transporter = nodemailer.createTransport({
   port: '465',
   auth: {
          user: 'mohitduttqexon@gmail.com',
-         pass: 'mohitdutt11111.',
+         pass: 'mohitduttibm5.'
 
      }
  });
-
+  
 module.exports = {
     async register (req, res) {
       try{
-        console.log(req.body)
         const { email } = req.body;
         newUser.findOne({email}).then(async (response)=>{
           if(response){
@@ -28,6 +27,28 @@ module.exports = {
           }else{
             const user = await newUser.create(req.body)
             res.send( user.toJSON())
+
+            const yeah = await newUser.findOne({email: req.body.email}).then(response=>{
+              if(response){
+                var data = {
+                  to: response.email,
+                  from: `mohitduttqexon@gmail.com`,
+                  subject: 'Email verification message!!',
+                  html: `<div>`+`hello please click on given link ${'http://localhost:8080/emailVerification?id='}`+response._id+`</div>`
+                };
+
+                transporter.sendMail(data, function (err, info) {
+                  console.log(data)
+                  if(err)
+                    console.log('error')
+                  else
+                    console.log('info',data.html);
+               });
+              }else{
+
+              }
+            })
+            
           }
         })
       }catch(err){
@@ -42,18 +63,11 @@ module.exports = {
         const { email ,password } = req.body;
         newUser.findOne({email}).then( response=>{
           if(response){
-            if(response.password === password){
-              let jwToken = jwt.sign({ email }, conf.db.jwtSalt);
+            if(response.password === password && response.user_Activation === 1){
+              let jwToken = jwt.sign({ email }, 'secretKey' );
               response.accessToken = jwToken;
               response.save().then(resp=>{
               })
-              // newUser.update({email},
-              //   { $set:
-              //       {
-              //         accessToken: jwToken
-              //       }
-              //   }
-              // )
               res.status(200).send({
                 msg: `logged in successfully`,
                 accessToken: jwToken,
@@ -117,12 +131,13 @@ module.exports = {
           };
     
           transporter.sendMail(data, function (err, info) {
+            console.log(data)
             if(err)
-              console.log('err')
+              console.log('error')
             else
               console.log('info',data.html);
               res.status(200).send({
-                data: data.html
+                data: 'mohitdutt'
               })
 
          });
@@ -139,7 +154,7 @@ module.exports = {
         newUser.findOne({reset_password_token:token}).then( response=>{
           if(response){
             response.reset_password_token = '',
-            resposne.password = password
+            response.password = password
             response.save().then(resp=>{
               console.log('resp', resp)
             })
@@ -218,11 +233,26 @@ module.exports = {
       }
     },
 
-    retrievePhoto(req, res, next){
-      try{
-
-      }catch(err){
-
-      }
+    emailVerification(req, res, next){
+      newUser.find({_id: req.body.id}).then(response=>{
+        // console.log('response',response)
+        if(response){
+          if(response[0].user_Activation === 0){
+            response[0].user_Activation = 1;
+            response[0].save()
+            .then(resp=>{
+              console.log('saved response is',resp);
+            })
+            res.status(200).send({
+              msg: `user activated successfully!!`
+            })
+          }else{
+            console.log('user is already activated')
+          }
+          
+        }else{
+          console.log('error')
+        }
+      })
     }
 }

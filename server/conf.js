@@ -1,7 +1,7 @@
 const config = {
  db:{
     "DB_String":"mongodb://localhost:27017/dbusers",
-    "Port": "3000",
+    "Port": "3001",
     "jwtSalt": "somerandomsalt"
  },
 //  mailer: {

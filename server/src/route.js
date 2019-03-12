@@ -1,7 +1,10 @@
 const AuthenticationController = require('./controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('./policy/AuthenticationControllerPolicy')
 const multer = require('multer');
-
+// const verifyToken = require('./middleware/verify')
+const auth = require('./middleware/verify');
+const jwt = require('jsonwebtoken')
+const newUser = require('../models/user');
 const fileFilter = (req, file, cb)=>{
    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/jpg'){
       cb(null, true)
@@ -21,6 +24,11 @@ const upload = multer({storage: storage,
    fileFilter: fileFilter
 })
 module.exports = (app)=> {
+
+   app.post('/posts',auth, (req, res, next)=>{
+      console.log('rds',req.body)
+   })
+   
    app.post('/register', 
    // AuthenticationControllerPolicy.register, 
    AuthenticationController.register)
@@ -44,7 +52,7 @@ module.exports = (app)=> {
    AuthenticationController.UploadPhoto
    )
 
-   app.get('/retrievePhoto', upload.single('file'),
-   AuthenticationController.retrievePhoto
+   app.post('/emailVerification',
+   AuthenticationController.emailVerification
    )
 }

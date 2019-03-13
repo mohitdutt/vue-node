@@ -57,15 +57,12 @@
         }
       }
     },
-    watch: {
-      email(value) {}
-    },
     methods: {
       setnewPassword(formName){debugger
         this.$refs[formName].validate(async(valid)=>{
           if(valid){debugger
             console.log('valid')
-            const response = await AuthenticationService.setPassword({
+            const response = await AuthenticationService.postData('setPassword',{
               token: this.$route.query.token,
               password: this.ruleForm.password
             })

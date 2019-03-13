@@ -4,7 +4,7 @@ const conf = require('../../conf')
 const async = require('async');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
+const encrypt= require('../middleware/enc-dcr') 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: '465',
@@ -28,7 +28,10 @@ module.exports = {
             const user = await newUser.create(req.body)
             res.send( user.toJSON())
 
-            const yeah = await newUser.findOne({email: req.body.email}).then(response=>{
+            const yeah = await newUser.findOne({email: req.body.email}).then(async (response)=>{
+              let arr = await encrypt.encrypt(req.body.email);
+              console.log('arr',arr)
+
               if(response){
                 var data = {
                   to: response.email,
@@ -40,12 +43,18 @@ module.exports = {
                 transporter.sendMail(data, function (err, info) {
                   console.log(data)
                   if(err)
-                    console.log('error')
+                    console.log('error in sending email')
                   else
                     console.log('info',data.html);
+                    res.send({
+                      error: 'error in nsending email'
+                    })
                });
               }else{
-
+                console.log('user not found')
+                res.send({
+                  error: 'user not found'
+                })
               }
             })
             
@@ -63,23 +72,26 @@ module.exports = {
         const { email ,password } = req.body;
         newUser.findOne({email}).then( response=>{
           if(response){
-            if(response.password === password && response.user_Activation === 1){
-              let jwToken = jwt.sign({ email }, 'secretKey' );
-              response.accessToken = jwToken;
-              response.save().then(resp=>{
-              })
-              res.status(200).send({
-                msg: `logged in successfully`,
-                accessToken: jwToken,
-                name: response.name,
-                email: response.email,
-                image: response.image,
-                phone: response.phone,
-                bio: response.bio,
-                location: response.location
-              })
+            if(response.password === password){
+              if(response.user_Activation === 1){
+                let jwToken = jwt.sign({ email }, 'secretKey' );
+                // response.accessToken = jwToken;
+                response.save().then(resp=>{
+                })
+                res.status(200).send({
+                  msg: `logged in successfully`,
+                  userData: {
+                    name: response.name, email: response.email, user_Activation: response.user_Activation
+                  },
+                  accessToken: jwToken
+                })
+              }else{
+                res.send({
+                  msg: 'user is temporarly deactivated!'
+                })
+              }
             }else if(response.password !== password){
-              res.status(400).send({
+              res.status(401).send({
                 msg: `password does not match`
               })
             }
@@ -104,7 +116,11 @@ module.exports = {
             email: req.body.email
           }).exec(function(err, user) {
             if (user) {
-              done(err, user);
+              if(user.user_Activation === 1){
+                done(err, user);
+              }else{
+                console.log('user is not activated yet')
+              }
             } else {
               done('newUser not found.');
             }
@@ -137,7 +153,7 @@ module.exports = {
             else
               console.log('info',data.html);
               res.status(200).send({
-                data: 'mohitdutt'
+                message: `email sent successfully`
               })
 
          });
@@ -235,16 +251,13 @@ module.exports = {
 
     emailVerification(req, res, next){
       newUser.find({_id: req.body.id}).then(response=>{
-        // console.log('response',response)
-        if(response){
+        if(response.length){
           if(response[0].user_Activation === 0){
             response[0].user_Activation = 1;
             response[0].save()
-            .then(resp=>{
-              console.log('saved response is',resp);
-            })
             res.status(200).send({
-              msg: `user activated successfully!!`
+              msg: `user activated successfully!!`,
+              email: response[0].email
             })
           }else{
             console.log('user is already activated')

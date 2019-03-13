@@ -74,14 +74,11 @@
         }
       }
     },
-    watch: {
-      email(value) {}
-    },
     methods: {
        register(formName) {debugger
         this.$refs[formName].validate(async(valid)=>{
           if(valid){debugger
-            const response = await  AuthenticationService.register({
+            const response = await  AuthenticationService.postData('register',{
               name: this.ruleForm.name,
               email: this.ruleForm.email,
               password: this.ruleForm.password

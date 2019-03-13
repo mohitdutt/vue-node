@@ -62,17 +62,23 @@
     },
     watch: {
     },
+    mounted() {debugger
+      if(this.$route.query.email){
+        this.ruleForm.email = this.$route.query.email
+      }
+    },
     methods: {
        login(formName) {debugger
         this.$refs[formName].validate(async(valid)=>{
           if(valid){
-            const response = await  AuthenticationService.login({
+            const response = await  AuthenticationService.postData('login',{
               email: this.ruleForm.email,
               password: this.ruleForm.password
             })
             console.log(response)
-            localStorage.setItem('accessToken', response.data.accessToken)
-            localStorage.setItem('userDetails', JSON.stringify(response.data))
+            localStorage.setItem('accessToken', response.accessToken)
+            let userDetails = response.data.userData
+            console.log(userDetails)
             this.$router.push('dashboard')
             return false;
           }else{
@@ -89,7 +95,7 @@
       forgotPasswordSubmit(formName){
         this.$refs[formName].validate(async (valid)=>{
           if(valid){debugger
-            const response = await AuthenticationService.resetPassword({
+            const response = await AuthenticationService.postData('resetPassword',{
               email: this.ruleForm.email
             })
              console.log(response)

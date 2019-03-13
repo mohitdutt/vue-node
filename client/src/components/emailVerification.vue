@@ -24,10 +24,9 @@
         const service = await AuthenticationService.emailVerification({
            id:this.$route.query.id
          })
-
          console.log(service)
          if(service.status === 200){
-           this.$router.push('/login')
+           this.$router.push('/login?email='+service.data.email)
          }
       }
     },

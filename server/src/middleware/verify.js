@@ -7,6 +7,7 @@ module.exports = (req, res, next) => {
         const bearerToken = bearer[1];
         jwt.verify(bearerToken, 'secretKey', (err, decoded) => {
             if (err) {
+                console.log('error')
                 res.sendStatus(403)
             } else {
                req.body.userData =  decoded;

@@ -1,9 +1,9 @@
 import Api from '@/services/Api'
 
 export default {
- postData(args){debugger
+ postData(page, data){debugger
 
-    return Api().post('emailVerification', args.data,)
+    return Api().post(page, data)
   },
 
   emailVerification(credentials){debugger
@@ -17,19 +17,19 @@ export default {
         authorization:'Token '+localStorage.accessToken
       }
     }
-    )},
-  register(credentials){
-    return Api().post('register', credentials)
-  },
-  login(credentials){
-    return Api().post('login', credentials)
-  },
-  resetPassword(credentials){
-    return Api().post('resetPassword', credentials)
-  },
-  setPassword(credentials){
-    return Api().post('setPassword', credentials)
-  },
+  )},
+  // register(credentials){
+  //   return Api().post('register', credentials)
+  // },
+  // login(credentials){
+  //   return Api().post('login', credentials)
+  // },
+  // resetPassword(credentials){
+  //   return Api().post('resetPassword', credentials)
+  // },
+  // setPassword(credentials){
+  //   return Api().post('setPassword', credentials)
+  // },
   logout(credentials){
     return Api().post('logout', credentials)
   },

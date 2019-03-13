@@ -25,7 +25,7 @@
       </el-form-item>
 
       <el-form-item label="image upload" prop= "image">
-        <!-- <el-upload class="upload-demo" drag action= "http://localhost:3001/UploadPhoto"
+        <!-- <el-upload class="upload-demo" drag action= "http://localhost:3002/UploadPhoto"
             :on-change= "fileupload"  :on-success= "successfileUpload" :on-error= "errorfileUpload" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList" v-model="ruleForm.image">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
@@ -157,7 +157,7 @@
       // const response =  await AuthenticationService.UploadPhoto({
       //     formData
       //   })
-      return axios.post("http://localhost:3001/UploadPhoto",
+      return axios.post("http://localhost:3002/UploadPhoto",
        formData,
        configheader)
         console.log(response)
